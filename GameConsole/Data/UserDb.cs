@@ -1,7 +1,8 @@
-﻿using GameConsole.Models;
+using GameConsole.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -11,42 +12,38 @@ namespace GameConsole.Data
     {
         private static List<User> users;
 
-        public UserDb()
+
+
+        public static User RegisterUser(string name, string userName, string password)
         {
-            users = new List<User>();
-        }
-        public static User RegisterUser(string username, string name, string password)
-        { 
-            User newUser = new User(username, name, password);
+            User newUser = new User(name, userName, password);
             users.Add(newUser);
+
             return newUser;
         }
 
         public static User Login(string username, string password)
         {
-            foreach (User user in users)
-            {
-                if (user.Username == username && user.Password == password)
-                {
-                    return user;
-                }
-            }
-            return null;
+            return users.FirstOrDefault(user => user.UserName == username && user.Password == password);
         }
 
-        public static void Update(User user)
+        public static void Update(User u)
         {
-            foreach (User u in users)
+            User user = users.FirstOrDefault(x => x.UserName == u.UserName);
+            if (user != null)
             {
-                if (u.Username == user.Username)
-                {
-                    u.Name = user.Name;
-                    u.Password = user.Password;
-                    return;
-                }
+                u.UserName = user.UserName;
+                u.Password = user.Password;
+                return;
             }
 
+
+            throw new InvalidOperationException("no such user exists!");
+        }
+    }
+}
             throw new InvalidOperationException("no such user exists");
         }
     }
 }
+
